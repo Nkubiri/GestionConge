@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Inscription - ELIE SCHOOL{% endblock %}
+{% block page_title %}Créer un Compte{% endblock %}
+
+{% block content %}
+    <form method="post" class="space-y-6">
+        {% csrf_token %} {# Très important pour la sécurité dans Django #}
+
+        {# Afficher les erreurs non-champ (globales) du formulaire #}
+        {% if form.non_field_errors %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Erreur !</strong>
+                <span class="block sm:inline">{{ form.non_field_errors }}</span>
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="mb-4">
+                <label for="{{ field.id_for_label }}" class="block text-gray-700 text-sm font-bold mb-2">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.help_text %}
+                    <p class="text-gray-600 text-xs italic mt-1">{{ field.help_text }}</p>
+                {% endif %}
+                {% for error in field.errors %}
+                    <p class="text-red-500 text-xs italic mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-primary w-full">S'inscrire</button>
+    </form>
+    <p class="mt-4 text-center text-gray-600">
+        Déjà un compte ? <a href="{% url 'login' %}" class="text-indigo-600 hover:text-indigo-800 font-semibold">Connectez-vous ici</a>.
+    </p>
+{% endblock %}

@@ -1,0 +1,30 @@
+<!-- D:\ElieSchoolProject\templates\home.html -->
+{% extends 'base.html' %}
+
+{% block title %}Accueil - ELIE SCHOOL{% endblock %}
+{% block page_title %}Bienvenue à ELIE SCHOOL{% endblock %}
+
+{% block content %}
+    <p class="text-lg text-gray-700 mb-4">
+        Bienvenue sur votre portail de gestion des congés.
+        Utilisez le menu à gauche pour naviguer dans l'application.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Demander un Congé</h2>
+            <p class="text-gray-600 mb-4">Soumettez une nouvelle demande de congé en quelques clics.</p>
+            <a href="{% url 'request_leave' %}" class="btn-primary">Nouvelle Demande</a>
+        </div>
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Mes Congés</h2>
+            <p class="text-gray-600 mb-4">Consultez le statut et l'historique de vos demandes de congé.</p>
+            <a href="{% url 'my_leaves' %}" class="btn-primary">Voir mes Congés</a>
+        </div>
+        <div class="card">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Solde de Congés</h2>
+            <p class="text-gray-600 mb-4">Vérifiez votre solde de jours de congé restants.</p>
+            <a href="#" class="btn-primary opacity-50 cursor-not-allowed">Voir Solde (Bientôt)</a>
+        </div>
+    </div>
+{% endblock %}

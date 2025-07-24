@@ -1,0 +1,66 @@
+<!-- D:\ElieSchoolProject\templates\base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gestion des Congés - ELIE SCHOOL{% endblock %}</title>
+    <!-- Intégration de Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lien vers notre fichier CSS personnalisé -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="flex min-h-screen">
+    <!-- Panneau de gauche (Menu) -->
+    <aside class="sidebar w-64 flex-shrink-0">
+        <div class="text-3xl font-bold mb-8 text-indigo-400">ELIE SCHOOL</div>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Accueil</a></li>
+                <li><a href="{% url 'request_leave' %}" class="nav-link {% if request.resolver_match.url_name == 'request_leave' %}active{% endif %}">Demander un Congé</a></li>
+                <li><a href="{% url 'my_leaves' %}" class="nav-link {% if request.resolver_match.url_name == 'my_leaves' %}active{% endif %}">Mes Congés</a></li>
+                <li><a href="{% url 'leaves_to_approve' %}" class="nav-link {% if request.resolver_match.url_name == 'leaves_to_approve' %}active{% endif %}">Congés à Approuver</a></li>
+                <li><a href="{% url 'all_employees_leaves' %}" class="nav-link {% if request.resolver_match.url_name == 'all_employees_leaves' %}active{% endif %}">Congés des Employés</a></li>
+                <!-- Ajoutez d'autres liens de navigation ici si nécessaire -->
+            </ul>
+        </nav>
+        <div class="mt-auto pt-8 border-t border-gray-700">
+            {% if user.is_authenticated %}
+                <p class="text-sm">Connecté(e) en tant que: <br><span class="font-semibold">{{ user.username }}</span></p>
+                <a href="{% url 'logout' %}" class="nav-link mt-4 bg-red-600 hover:bg-red-700 text-white">Déconnexion</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-link bg-green-600 hover:bg-green-700 text-white">Connexion</a>
+                <a href="{% url 'register' %}" class="nav-link mt-2 bg-blue-600 hover:bg-blue-700 text-white">S'inscrire</a>
+            {% endif %}
+        </div>
+    </aside>
+
+    <!-- Panneau de droite (Contenu principal) -->
+    <main class="flex-grow p-8">
+        <div class="max-w-4xl mx-auto">
+            <!-- Titre de la page -->
+            <h1 class="header-title">{% block page_title %}{% endblock %}</h1>
+
+            <!-- Messages Django (succès, erreur, etc.) -->
+            {% if messages %}
+                <ul class="messages mb-4">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="p-3 rounded-md mb-2 {% if 'success' in message.tags %}bg-green-100 text-green-800{% elif 'error' in message.tags %}bg-red-100 text-red-800{% elif 'warning' in message.tags %}bg-yellow-100 text-yellow-800{% else %}bg-blue-100 text-blue-800{% endif %}"{% endif %}>
+                            {{ message }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <!-- Contenu spécifique de chaque page -->
+            <div class="content-area">
+                {% block content %}
+                    <!-- Le contenu de chaque page spécifique ira ici -->
+                {% endblock %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>

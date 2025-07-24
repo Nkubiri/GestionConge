@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirmer Suppression - ELIE SCHOOL{% endblock %}
+{% block page_title %}Confirmer la Suppression du Congé{% endblock %}
+
+{% block content %}
+    <div class="card bg-red-50 border border-red-200">
+        <h2 class="text-2xl font-bold text-red-800 mb-4">Êtes-vous sûr de vouloir supprimer ce congé ?</h2>
+        <p class="text-gray-700 mb-4">
+            Cette action est irréversible. Les détails du congé à supprimer sont les suivants :
+        </p>
+        <ul class="list-disc list-inside mb-6 text-gray-800">
+            <li><strong>Employé:</strong> {{ leave.employee.first_name }} {{ leave.employee.last_name }}</li>
+            <li><strong>Type de Congé:</strong> {{ leave.get_leave_type_display }}</li>
+            <li><strong>Période:</strong> {{ leave.start_date|date:"d M Y" }} - {{ leave.end_date|date:"d M Y" }} ({{ leave.duration_days }} jours)</li>
+            <li><strong>Statut:</strong> {{ leave.get_status_display }}</li>
+            <li><strong>Raison:</strong> {{ leave.reason|default:"N/A" }}</li>
+        </ul>
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div class="flex space-x-4">
+                <button type="submit" class="btn-primary flex-1 bg-red-600 hover:bg-red-700">Oui, Supprimer</button>
+                <a href="{% url 'all_employees_leaves' %}" class="btn-primary flex-1 bg-gray-600 hover:bg-gray-700 text-center">Annuler</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

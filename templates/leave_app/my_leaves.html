@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Mes Congés - ELIE SCHOOL{% endblock %}
+{% block page_title %}Mes Demandes de Congé{% endblock %}
+
+{% block content %}
+    <div class="card mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Votre Solde de Congés Actuel: <span class="text-indigo-600">{{ employee_leave_balance }} jours</span></h2>
+        <a href="{% url 'request_leave' %}" class="btn-primary inline-block">Demander un nouveau congé</a>
+    </div>
+
+    {% if my_leaves %}
+        <div class="overflow-x-auto bg-white rounded-lg shadow overflow-y-auto relative">
+            <table class="w-full whitespace-no-wrap bg-white table-auto">
+                <thead>
+                    <tr class="text-left font-bold bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Type</th>
+                        <th class="py-3 px-6 text-left">Début</th>
+                        <th class="py-3 px-6 text-left">Fin</th>
+                        <th class="py-3 px-6 text-left">Durée (jours)</th>
+                        <th class="py-3 px-6 text-left">Statut</th>
+                        <th class="py-3 px-6 text-left">Demandé le</th>
+                        <th class="py-3 px-6 text-left">Raison</th>
+                        <th class="py-3 px-6 text-left">Commentaires</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm font-light">
+                    {% for leave in my_leaves %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ leave.get_leave_type_display }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.start_date|date:"d M Y" }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.end_date|date:"d M Y" }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.duration_days }}</td>
+                            <td class="py-3 px-6 text-left">
+                                <span class="
+                                    {% if leave.status == 'PENDING' %}bg-yellow-200 text-yellow-800
+                                    {% elif leave.status == 'APPROVED' %}bg-green-200 text-green-800
+                                    {% elif leave.status == 'REJECTED' %}bg-red-200 text-red-800
+                                    {% else %}bg-gray-200 text-gray-800{% endif %}
+                                    py-1 px-3 rounded-full text-xs font-semibold">
+                                    {{ leave.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-6 text-left">{{ leave.requested_at|date:"d M Y H:i" }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.reason|default:"N/A" }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.manager_comments|default:"N/A" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
+            <p class="font-bold">Aucune demande de congé</p>
+            <p>Vous n'avez pas encore soumis de demande de congé. <a href="{% url 'request_leave' %}" class="font-semibold underline">Cliquez ici pour en faire une !</a></p>
+        </div>
+    {% endif %}
+{% endblock %}

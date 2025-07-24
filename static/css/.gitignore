@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+env/                 # Votre environnement virtuel
+venv/                # Autre nom courant pour l'environnement virtuel
+*.env                # Fichiers d'environnement (si vous en utilisez)
+.pytest_cache/
+.coverage
+
+# Django
+db.sqlite3           # La base de données SQLite de développement
+/media/              # Dossier où les fichiers uploadés par l'utilisateur sont stockés (si configuré)
+/staticfiles/        # Dossier où les fichiers statiques sont collectés en production
+
+# IDEs
+.idea/               # Fichiers de configuration PyCharm
+.vscode/             # Fichiers de configuration VS Code
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+.DS_Store            # Fichiers macOS
+Thumbs.db            # Fichiers Windows

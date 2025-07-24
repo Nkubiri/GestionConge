@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Tous les Congés des Employés - ELIE SCHOOL{% endblock %}
+{% block page_title %}Toutes les Demandes de Congé des Employés{% endblock %}
+
+{% block content %}
+    {% if all_leaves %}
+        <div class="overflow-x-auto bg-white rounded-lg shadow overflow-y-auto relative">
+            <table class="w-full whitespace-no-wrap bg-white table-auto">
+                <thead>
+                    <tr class="text-left font-bold bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                        <th class="py-3 px-6 text-left">Employé</th>
+                        <th class="py-3 px-6 text-left">Type</th>
+                        <th class="py-3 px-6 text-left">Début</th>
+                        <th class="py-3 px-6 text-left">Fin</th>
+                        <th class="py-3 px-6 text-left">Durée (jours)</th>
+                        <th class="py-3 px-6 text-left">Statut</th>
+                        <th class="py-3 px-6 text-left">Demandé le</th>
+                        <th class="py-3 px-6 text-left">Raison</th>
+                        <th class="py-3 px-6 text-left">Approuvé par</th>
+                        <th class="py-3 px-6 text-left">Commentaires</th>
+                        <th class="py-3 px-6 text-center">Actions</th> {# Nouvelle colonne #}
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700 text-sm font-light">
+                    {% for leave in all_leaves %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ leave.employee.first_name }} {{ leave.employee.last_name }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.get_leave_type_display }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.start_date|date:"d M Y" }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.end_date|date:"d M Y" }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.duration_days }}</td>
+                            <td class="py-3 px-6 text-left">
+                                <span class="
+                                    {% if leave.status == 'PENDING' %}bg-yellow-200 text-yellow-800
+                                    {% elif leave.status == 'APPROVED' %}bg-green-200 text-green-800
+                                    {% elif leave.status == 'REJECTED' %}bg-red-200 text-red-800
+                                    {% else %}bg-gray-200 text-gray-800{% endif %}
+                                    py-1 px-3 rounded-full text-xs font-semibold">
+                                    {{ leave.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-6 text-left">{{ leave.requested_at|date:"d M Y H:i" }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.reason|default:"N/A" }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.approved_by.username|default:"N/A" }}</td>
+                            <td class="py-3 px-6 text-left">{{ leave.manager_comments|default:"N/A" }}</td>
+                            <td class="py-3 px-6 text-center"> {# Nouvelle cellule d'actions #}
+                                <div class="flex item-center justify-center space-x-2">
+                                    <a href="{% url 'edit_leave' leave.pk %}" class="text-indigo-600 hover:text-indigo-900 text-sm font-semibold">Modifier</a>
+                                    <a href="{% url 'delete_leave' leave.pk %}" class="text-red-600 hover:text-red-900 text-sm font-semibold ml-2">Supprimer</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4" role="alert">
+            <p class="font-bold">Aucune demande de congé enregistrée</p>
+            <p>Il n'y a actuellement aucune demande de congé dans le système.</p>
+        </div>
+    {% endif %}
+{% endblock %}

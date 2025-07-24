@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Gérer Congé - ELIE SCHOOL{% endblock %}
+{% block page_title %}Gérer la Demande de Congé{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Détails de la Demande de Congé</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+                <p class="text-gray-600">Employé:</p>
+                <p class="font-semibold text-lg">{{ leave.employee.first_name }} {{ leave.employee.last_name }}</p>
+            </div>
+            <div>
+                <p class="text-gray-600">ID Employé:</p>
+                <p class="font-semibold text-lg">{{ leave.employee.employee_id }}</p>
+            </div>
+            <div>
+                <p class="text-gray-600">Type de Congé:</p>
+                <p class="font-semibold text-lg">{{ leave.get_leave_type_display }}</p>
+            </div>
+            <div>
+                <p class="text-gray-600">Période:</p>
+                <p class="font-semibold text-lg">{{ leave.start_date|date:"d M Y" }} - {{ leave.end_date|date:"d M Y" }}</p>
+            </div>
+            <div>
+                <p class="text-gray-600">Durée:</p>
+                <p class="font-semibold text-lg">{{ leave.duration_days }} jours</p>
+            </div>
+            <div>
+                <p class="text-gray-600">Statut Actuel:</p>
+                <p class="font-semibold text-lg">
+                    <span class="
+                        {% if leave.status == 'PENDING' %}bg-yellow-200 text-yellow-800
+                        {% elif leave.status == 'APPROVED' %}bg-green-200 text-green-800
+                        {% elif leave.status == 'REJECTED' %}bg-red-200 text-red-800
+                        {% else %}bg-gray-200 text-gray-800{% endif %}
+                        py-1 px-3 rounded-full text-base font-semibold">
+                        {{ leave.get_status_display }}
+                    </span>
+                </p>
+            </div>
+            <div class="md:col-span-2">
+                <p class="text-gray-600">Raison:</p>
+                <p class="font-semibold text-lg">{{ leave.reason|default:"Non spécifiée" }}</p>
+            </div>
+        </div>
+
+        {% if leave.status == 'PENDING' %}
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Actions du Responsable</h3>
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="manager_comments" class="block text-gray-700 text-sm font-bold mb-2">
+                        Commentaires du Responsable (optionnel):
+                    </label>
+                    <textarea name="manager_comments" id="manager_comments" rows="4" class="form-input"></textarea>
+                </div>
+                <div class="flex space-x-4">
+                    <button type="submit" name="action" value="approve" class="btn-primary flex-1 bg-green-600 hover:bg-green-700">Approuver</button>
+                    <button type="submit" name="action" value="reject" class="btn-primary flex-1 bg-red-600 hover:bg-red-700">Rejeter</button>
+                </div>
+            </form>
+        {% elif leave.status == 'APPROVED' %}
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded" role="alert">
+                <p class="font-bold">Congé Approuvé !</p>
+                <p>Approuvé par: {{ leave.approved_by.username }} le {{ leave.approved_rejected_at|date:"d M Y H:i" }}</p>
+                {% if leave.manager_comments %}<p>Commentaires: {{ leave.manager_comments }}</p>{% endif %}
+            </div>
+        {% elif leave.status == 'REJECTED' %}
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded" role="alert">
+                <p class="font-bold">Congé Rejeté !</p>
+                <p>Rejeté par: {{ leave.approved_by.username }} le {{ leave.approved_rejected_at|date:"d M Y H:i" }}</p>
+                {% if leave.manager_comments %}<p>Commentaires: {{ leave.manager_comments }}</p>{% endif %}
+            </div>
+        {% else %} {# For CANCELLED or other statuses #}
+            <div class="bg-gray-100 border-l-4 border-gray-500 text-gray-700 p-4 rounded" role="alert">
+                <p class="font-bold">Statut du Congé: {{ leave.get_status_display }}</p>
+                {% if leave.approved_by %}<p>Traité par: {{ leave.approved_by.username }} le {{ leave.approved_rejected_at|date:"d M Y H:i" }}</p>{% endif %}
+                {% if leave.manager_comments %}<p>Commentaires: {{ leave.manager_comments }}</p>{% endif %}
+            </div>
+        {% endif %}
+
+        <div class="mt-6 text-center">
+            <a href="{% url 'leaves_to_approve' %}" class="btn-primary bg-gray-600 hover:bg-gray-700">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}
